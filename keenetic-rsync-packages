@@ -5,4 +5,6 @@ NAME=$(basename $0)
 
 echo "[*] $NAME: Packages upload started at: "`date`
 
-rsync -av --delete-after $DIR_KEENETIC/bin/keenetic/packages/ $RSYNC_DST/packages/
+rsync -av --delete-after --log-file=$DIR_LOG/packages-$DATE.log $DIR_KEENETIC/bin/keenetic/packages/ $RSYNC_DST/packages/
+
+keenetic-rsync-logs

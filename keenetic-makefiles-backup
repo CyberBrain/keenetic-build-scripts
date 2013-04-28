@@ -5,26 +5,28 @@ NAME=$(basename $0)
 
 if [ ! -d $DIR_MAKEFILES ]; then
     mkdir -p $DIR_MAKEFILES
-    echo "[!] $NAME: Backup dir for makefiles is created"
+    echo "[!] $NAME: Backup dir for makefiles is created" | tee -a $DIR_LOG/backup-$DATE.log
 fi
 
 PROGLIST="$(ls -1 $DIR_MAKEFILES)"
 
 if [ -n "$PROGLIST" ]; then
 
-    echo "[*] $NAME: Backup started at: "`date`
+    echo "[*] $NAME: Backup started at: "`date` | tee -a $DIR_LOG/backup-$DATE.log
 
     for ITEM in $PROGLIST; do
         if [ ! -L $DIR_MAKEFILES/$ITEM/Makefile -o -n "$(diff $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_MAKEFILES/$ITEM/Makefile)" ]; then
-            echo "Backup: $ITEM"
+            echo "Backup: $ITEM" | tee -a $DIR_LOG/backup-$DATE.log
             cp $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_MAKEFILES/$ITEM/Makefile.$DATE
             cd $DIR_MAKEFILES/$ITEM/
             ln -fs Makefile.$DATE Makefile
         else
-            echo "Skipping: $ITEM"
+            echo "Skipping: $ITEM" | tee -a $DIR_LOG/backup-$DATE.log
         fi
     done
 
 else
-    echo "[!] $NAME: Nothing to backup"
+    echo "[!] $NAME: Nothing to backup" | tee -a $DIR_LOG/backup-$DATE.log
 fi
+
+keenetic-rsync-logs
