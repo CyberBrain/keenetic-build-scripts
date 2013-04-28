@@ -1,0 +1,8 @@
+#!/bin/sh
+
+. $HOME/.keenetic
+NAME=$(basename $0)
+
+echo "[*] $NAME: Makefiles upload started at: "`date`
+
+rsync -av --delete-after $DIR_MAKEFILES $RSYNC_DST/makefiles/

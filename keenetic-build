@@ -1,0 +1,16 @@
+#!/bin/sh
+
+. $HOME/.keenetic
+NAME=$(basename $0)
+
+keenetic-makefiles-backup && keenetic-rsync-makefiles
+
+echo "\n[*] $NAME: Compilation started at: "`date`"\n"
+mkdir -p $DIR_LOG
+cd $DIR_KEENETIC
+make V=99 > $DIR_LOG/keenetic-$DATE.log 2>&1 && keenetic-rsync-packages
+
+echo "\n[*] $NAME: Logs upload started at: "`date`
+rsync -a --delete-after $DIR_LOG $RSYNC_DST
+
+echo "[*] $NAME: All done at: "`date`"\n"

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+. $HOME/.keenetic
+NAME=$(basename $0)
+
+if [ ! -d $DIR_MAKEFILES ]; then
+    mkdir -p $DIR_MAKEFILES
+    echo "[!] $NAME: Backup dir for makefiles is created"
+fi
+
+PROGLIST="$(ls -1 $DIR_MAKEFILES)"
+
+if [ -n "$PROGLIST" ]; then
+
+    echo "[*] $NAME: Backup started at: "`date`
+
+    for ITEM in $PROGLIST; do
+        if [ ! -L $DIR_MAKEFILES/$ITEM/Makefile -o -n "$(diff $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_MAKEFILES/$ITEM/Makefile)" ]; then
+            echo "Backup: $ITEM"
+            cp $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_MAKEFILES/$ITEM/Makefile.$DATE
+            cd $DIR_MAKEFILES/$ITEM/
+            ln -fs Makefile.$DATE Makefile
+        else
+            echo "Skipping: $ITEM"
+        fi
+    done
+
+else
+    echo "[!] $NAME: Nothing to backup"
+fi
