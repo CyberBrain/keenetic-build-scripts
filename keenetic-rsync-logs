@@ -1,0 +1,5 @@
+#!/bin/sh
+
+. $HOME/.keenetic
+
+rsync -a --delete-after $DIR_LOG $RSYNC_DST
