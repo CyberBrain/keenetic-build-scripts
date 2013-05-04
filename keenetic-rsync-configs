@@ -1,0 +1,10 @@
+#!/bin/sh
+
+. $HOME/.keenetic
+NAME=$(basename $0)
+
+echo "[*] $NAME: Configs upload started at: "`date`
+
+rsync -av --delete-after --log-file=$DIR_LOG/configs-$DATE.log $DIR_CONFIGS/ $RSYNC_DST/configs/
+
+keenetic-rsync-logs

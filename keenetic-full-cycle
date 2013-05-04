@@ -3,7 +3,7 @@
 . $HOME/.keenetic
 NAME=$(basename $0)
 
-keenetic-makefiles-backup && keenetic-rsync-makefiles
+keenetic-backup-configs && keenetic-rsync-configs
 
 echo "\n[*] $NAME: Compilation started at: "`date`"\n"
 mkdir -p $DIR_LOG
