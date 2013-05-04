@@ -15,14 +15,14 @@ if [ -n "$PROGLIST" ]; then
     echo "[*] $NAME: Backup started at: "`date` | tee -a $DIR_LOG/backup-$DATE.log
 
     for ITEM in $PROGLIST; do
-        if [ ! -L $DIR_CONFIGS/$ITEM/Makefile -o -n "$(diff $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_CONFIGS/$ITEM/Makefile)" ]; then
+        if [ ! -L $DIR_CONFIGS/$ITEM/Makefile -o -n "$(diff $DIR_CONFIGS/$ITEM/Makefile $DIR_KEENETIC/package/built/$ITEM/Makefile)" ]; then
             echo "Backup: $ITEM (Makefile)" | tee -a $DIR_LOG/backup-$DATE.log
             cp $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_CONFIGS/$ITEM/Makefile.$DATE
             cd $DIR_CONFIGS/$ITEM/
             ln -fs Makefile.$DATE Makefile
         fi
         if [ -f $DIR_KEENETIC/package/built/$ITEM/Config.in ]; then
-            if [ ! -L $DIR_CONFIGS/$ITEM/Config.in -o -n "$(diff $DIR_KEENETIC/package/built/$ITEM/Config.in $DIR_CONFIGS/$ITEM/Config.in)" ]; then
+            if [ ! -L $DIR_CONFIGS/$ITEM/Config.in -o -n "$(diff $DIR_CONFIGS/$ITEM/Config.in $DIR_KEENETIC/package/built/$ITEM/Config.in)" ]; then
                 echo "Backup: $ITEM (Config.in)" | tee -a $DIR_LOG/backup-$DATE.log
                 cp $DIR_KEENETIC/package/built/$ITEM/Config.in $DIR_CONFIGS/$ITEM/Config.in.$DATE
                 cd $DIR_CONFIGS/$ITEM/
@@ -32,7 +32,16 @@ if [ -n "$PROGLIST" ]; then
     done
 
 else
-    echo "[!] $NAME: Nothing to backup" | tee -a $DIR_LOG/backup-$DATE.log
+    echo "[!] $NAME: No configs to backup" | tee -a $DIR_LOG/backup-$DATE.log
 fi
+
+
+if [ ! -L $DIR_CONFIGS/keenetic.config -o -n "$(diff $DIR_CONFIGS/keenetic.config $DIR_KEENETIC/.config)" ]; then
+    echo "Backup: KEENETIC.CONFIG" | tee -a $DIR_LOG/backup-$DATE.log
+    cp $DIR_KEENETIC/.config $DIR_CONFIGS/keenetic.config.$DATE
+    cd $DIR_CONFIGS/
+    ln -fs keenetic.config.$DATE keenetic.config
+fi
+
 
 keenetic-rsync-logs
