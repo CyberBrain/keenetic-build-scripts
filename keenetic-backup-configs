@@ -15,19 +15,23 @@ if [ -n "$PROGLIST" ]; then
     echo "[*] $NAME: Backup started at: "`date` | tee -a $DIR_LOG/backup-$DATE.log
 
     for ITEM in $PROGLIST; do
-        if [ ! -L $DIR_CONFIGS/$ITEM/Makefile -o -n "$(diff $DIR_CONFIGS/$ITEM/Makefile $DIR_KEENETIC/package/built/$ITEM/Makefile)" ]; then
-            echo "Backup: $ITEM (Makefile)" | tee -a $DIR_LOG/backup-$DATE.log
-            cp $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_CONFIGS/$ITEM/Makefile.$DATE
-            cd $DIR_CONFIGS/$ITEM/
-            ln -fs Makefile.$DATE Makefile
-        fi
-        if [ -f $DIR_KEENETIC/package/built/$ITEM/Config.in ]; then
-            if [ ! -L $DIR_CONFIGS/$ITEM/Config.in -o -n "$(diff $DIR_CONFIGS/$ITEM/Config.in $DIR_KEENETIC/package/built/$ITEM/Config.in)" ]; then
-                echo "Backup: $ITEM (Config.in)" | tee -a $DIR_LOG/backup-$DATE.log
-                cp $DIR_KEENETIC/package/built/$ITEM/Config.in $DIR_CONFIGS/$ITEM/Config.in.$DATE
+        if [ "$ITEM" != 'Keenetic' ]; then
+
+            if [ ! -L $DIR_CONFIGS/$ITEM/Makefile -o -n "$(diff $DIR_CONFIGS/$ITEM/Makefile $DIR_KEENETIC/package/built/$ITEM/Makefile)" ]; then
+                echo "Backup: $ITEM (Makefile)" | tee -a $DIR_LOG/backup-$DATE.log
+                cp $DIR_KEENETIC/package/built/$ITEM/Makefile $DIR_CONFIGS/$ITEM/Makefile.$DATE
                 cd $DIR_CONFIGS/$ITEM/
-                ln -fs Config.in.$DATE Config.in
+                ln -fs Makefile.$DATE Makefile
             fi
+            if [ -f $DIR_KEENETIC/package/built/$ITEM/Config.in ]; then
+                if [ ! -L $DIR_CONFIGS/$ITEM/Config.in -o -n "$(diff $DIR_CONFIGS/$ITEM/Config.in $DIR_KEENETIC/package/built/$ITEM/Config.in)" ]; then
+                    echo "Backup: $ITEM (Config.in)" | tee -a $DIR_LOG/backup-$DATE.log
+                    cp $DIR_KEENETIC/package/built/$ITEM/Config.in $DIR_CONFIGS/$ITEM/Config.in.$DATE
+                    cd $DIR_CONFIGS/$ITEM/
+                    ln -fs Config.in.$DATE Config.in
+                fi
+            fi
+
         fi
     done
 
@@ -36,10 +40,10 @@ else
 fi
 
 
-if [ ! -L $DIR_CONFIGS/keenetic.config -o -n "$(diff $DIR_CONFIGS/keenetic.config $DIR_KEENETIC/.config)" ]; then
+if [ ! -L $DIR_CONFIGS/Keenetic/keenetic.config -o -n "$(diff $DIR_CONFIGS/Keenetic/keenetic.config $DIR_KEENETIC/.config)" ]; then
     echo "Backup: KEENETIC.CONFIG" | tee -a $DIR_LOG/backup-$DATE.log
-    cp $DIR_KEENETIC/.config $DIR_CONFIGS/keenetic.config.$DATE
-    cd $DIR_CONFIGS/
+    cp $DIR_KEENETIC/.config $DIR_CONFIGS/Keenetic/keenetic.config.$DATE
+    cd $DIR_CONFIGS/Keenetic/
     ln -fs keenetic.config.$DATE keenetic.config
 fi
 
